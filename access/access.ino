@@ -4,8 +4,8 @@ Adafruit_Fingerprint finger = Adafruit_Fingerprint(&mySerial);
 bool go = false;
 
 // RELAY LOGIC
-const int relayPin = 9;       // Pin connected to the relay IN pin
-const int relayOutputPin = 12; // Pin connected to the relay NO terminal
+const int relayPin = 8;       // Pin connected to the relay IN pin
+const int transistorPin = 13;
 
 
 #include <LiquidCrystal_I2C.h>
@@ -28,12 +28,20 @@ void setup() {
 
   lcdSetup();
 
+  pinMode(transistorPin, OUTPUT); 
+  digitalWrite(transistorPin, LOW);
+  delay(1000);
+  digitalWrite(transistorPin, HIGH);
+
   Serial.println("Setup complete.");
 }
 
 void loop() {
   if (!go){
+    Serial.println("Will go");
+    lcd.backlight();
     getFingerprintID();
+    lcd.noBacklight();
     go = true;
   }
 }
@@ -69,11 +77,11 @@ uint8_t getFingerprintID() {
 }
 
 void handleSuccess() {
-  lcdSuccess();
+  ledSuccess();
   printSuccess();
 }
 
-void lcdSuccess() {
+void ledSuccess() {
   finger.LEDcontrol(FINGERPRINT_LED_ON, 0, FINGERPRINT_LED_BLUE);
   delay(1000);
   finger.LEDcontrol(FINGERPRINT_LED_OFF, 0, FINGERPRINT_LED_BLUE);
@@ -149,9 +157,12 @@ void lcdFailure() {
 }
 
 void relayLogic() {
-  digitalWrite(relayPin, HIGH);
-  delay(1000);
+  
+
   digitalWrite(relayPin, LOW);
+  delay(20);
+  digitalWrite(relayPin, HIGH);
+  
 }
 
 void printSuccess() {
@@ -204,11 +215,11 @@ void fingerprintSensorSetup() {
 
 void relaySetup() {
   pinMode(relayPin, OUTPUT);         // Set relay pin as an output
-  digitalWrite(relayPin, LOW); // Ensure relay starts off
+  digitalWrite(relayPin, HIGH ); // Ensure relay starts off
 }
 
 void lcdSetup() {
-  //initialize lcd screen
+  // initialize lcd screen
   lcd.init();
   // turn on the backlight
   lcd.backlight();
