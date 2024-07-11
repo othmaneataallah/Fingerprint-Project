@@ -28,10 +28,7 @@ void setup() {
 
   lcdSetup();
 
-  pinMode(transistorPin, OUTPUT); 
-  digitalWrite(transistorPin, LOW);
-  delay(1000);
-  digitalWrite(transistorPin, HIGH);
+  transistorSetup();
 
   Serial.println("Setup complete.");
 }
@@ -223,4 +220,11 @@ void lcdSetup() {
   lcd.init();
   // turn on the backlight
   lcd.backlight();
+}
+
+void transistorSetup() {
+  pinMode(transistorPin, OUTPUT); 
+  digitalWrite(transistorPin, LOW);
+  delay(1000);
+  digitalWrite(transistorPin, HIGH);
 }
